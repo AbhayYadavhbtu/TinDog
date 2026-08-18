@@ -4,7 +4,6 @@ pipeline {
 
     tools {
         nodejs 'NodeJS'
-        sonarRunner 'SonarScanner'
     }
 
     stages {
@@ -35,20 +34,22 @@ pipeline {
 
                 echo 'Running SonarQube analysis...'
 
-                withSonarQubeEnv('SonarQube') {
+                script {
 
-                    sh '''
-                        echo "SonarScanner location:"
-                        which sonar-scanner
+                    def scannerHome = tool 'SonarScanner'
 
-                        echo "SonarScanner version:"
-                        sonar-scanner --version
+                    withSonarQubeEnv('SonarQube') {
 
-                        sonar-scanner \
-                        -Dsonar.projectKey=tindog \
-                        -Dsonar.projectName=TinDog \
-                        -Dsonar.sources=.
-                    '''
+                        sh """
+                            echo "SonarScanner location:"
+                            ${scannerHome}/bin/sonar-scanner --version
+
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=tindog \
+                            -Dsonar.projectName=TinDog \
+                            -Dsonar.sources=.
+                        """
+                    }
                 }
             }
         }
@@ -73,27 +74,6 @@ pipeline {
                 sh 'npm run build'
             }
         }
-
-        // stage('Deploy to Vercel') {
-        //     steps {
-        //
-        //         echo 'Deploying TinDog to Vercel...'
-        //
-        //         withCredentials([
-        //             string(
-        //                 credentialsId: 'vercel-token',
-        //                 variable: 'VERCEL_TOKEN'
-        //             )
-        //         ]) {
-        //
-        //             sh '''
-        //                 npx vercel deploy \
-        //                 --prod \
-        //                 --token=$VERCEL_TOKEN
-        //             '''
-        //         }
-        //     }
-        // }
     }
 
     post {
@@ -107,7 +87,6 @@ pipeline {
         failure {
             echo '======================================'
             echo 'TinDog CI/CD Pipeline FAILED!'
-            echo 'Deployment was NOT performed.'
             echo '======================================'
         }
     }
