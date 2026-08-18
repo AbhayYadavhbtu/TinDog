@@ -1,0 +1,22 @@
+{
+  "name": "tindog",
+  "version": "1.0.0",
+  "description": "TinDog static HTML CSS website",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests/test.js",
+    "build": "node build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbhayYadavhbtu/TinDog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AbhayYadavhbtu/TinDog/issues"
+  },
+  "homepage": "https://github.com/AbhayYadavhbtu/TinDog#readme"
+}

@@ -1,0 +1,91 @@
+pipeline {
+
+    agent any
+
+    tools {
+        nodejs 'NodeJS'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo 'Checking out TinDog source code...'
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing dependencies...'
+                sh 'npm ci'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running TinDog tests...'
+                sh 'npm test'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube analysis...'
+
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        sonar-scanner \
+                        -Dsonar.projectKey=tindog \
+                        -Dsonar.sources=.
+                    '''
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building TinDog...'
+                sh 'npm run build'
+            }
+        }
+
+        stage('Deploy to Vercel') {
+            steps {
+
+                echo 'Deploying TinDog to Vercel...'
+
+                withCredentials([
+                    string(
+                        credentialsId: 'vercel-token',
+                        variable: 'VERCEL_TOKEN'
+                    )
+                ]) {
+
+                    sh '''
+                        npx vercel deploy \
+                        --prod \
+                        --token=$VERCEL_TOKEN
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+
+        success {
+            echo '======================================'
+            echo 'TinDog CI/CD Pipeline SUCCESS!'
+            echo 'Website deployed to Vercel.'
+            echo '======================================'
+        }
+
+        failure {
+            echo '======================================'
+            echo 'TinDog CI/CD Pipeline FAILED!'
+            echo 'Deployment was NOT performed.'
+            echo '======================================'
+        }
+    }
+}
