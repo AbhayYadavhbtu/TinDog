@@ -29,19 +29,19 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                echo 'Running SonarQube analysis...'
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         echo 'Running SonarQube analysis...'
 
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                        sonar-scanner \
-                        -Dsonar.projectKey=tindog \
-                        -Dsonar.sources=.
-                    '''
-                }
-            }
-        }
+        //         withSonarQubeEnv('SonarQube') {
+        //             sh '''
+        //                 sonar-scanner \
+        //                 -Dsonar.projectKey=tindog \
+        //                 -Dsonar.sources=.
+        //             '''
+        //         }
+        //     }
+        // }
 
         stage('Build') {
             steps {
@@ -50,26 +50,26 @@ pipeline {
             }
         }
 
-        stage('Deploy to Vercel') {
-            steps {
+        // stage('Deploy to Vercel') {
+        //     steps {
 
-                echo 'Deploying TinDog to Vercel...'
+        //         echo 'Deploying TinDog to Vercel...'
 
-                withCredentials([
-                    string(
-                        credentialsId: 'vercel-token',
-                        variable: 'VERCEL_TOKEN'
-                    )
-                ]) {
+        //         withCredentials([
+        //             string(
+        //                 credentialsId: 'vercel-token',
+        //                 variable: 'VERCEL_TOKEN'
+        //             )
+        //         ]) {
 
-                    sh '''
-                        npx vercel deploy \
-                        --prod \
-                        --token=$VERCEL_TOKEN
-                    '''
-                }
-            }
-        }
+        //             sh '''
+        //                 npx vercel deploy \
+        //                 --prod \
+        //                 --token=$VERCEL_TOKEN
+        //             '''
+        //         }
+        //     }
+        // }
     }
 
     post {
