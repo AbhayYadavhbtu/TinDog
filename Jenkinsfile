@@ -29,19 +29,33 @@ pipeline {
             }
         }
 
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         echo 'Running SonarQube analysis...'
+       stage('SonarQube Analysis') {
 
-        //         withSonarQubeEnv('SonarQube') {
-        //             sh '''
-        //                 sonar-scanner \
-        //                 -Dsonar.projectKey=tindog \
-        //                 -Dsonar.sources=.
-        //             '''
-        //         }
-        //     }
-        // }
+            steps {
+
+                withSonarQubeEnv('SonarQube') {
+
+                    sh '''
+                        sonar-scanner \
+                        -Dsonar.projectKey=tindog \
+                        -Dsonar.projectName=TinDog \
+                        -Dsonar.sources=.
+                    '''
+                }
+            }
+        }
+        
+        stage('Quality Gate') {
+            steps {
+
+                echo 'Waiting for SonarQube Quality Gate...'
+
+                timeout(time: 10, unit: 'MINUTES') {
+
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
 
         stage('Build') {
             steps {
