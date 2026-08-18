@@ -1,10 +1,10 @@
 pipeline {
 
     agent any
-
     tools {
-        nodejs 'NodeJS'
-    }
+            nodejs 'NodeJS'
+            sonarQube 'SonarScanner'
+        }
 
     stages {
 
@@ -44,7 +44,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Quality Gate') {
             steps {
 
