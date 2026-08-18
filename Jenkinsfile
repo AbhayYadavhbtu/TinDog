@@ -1,10 +1,11 @@
 pipeline {
 
     agent any
+
     tools {
-            nodejs 'NodeJS'
-            sonarQube 'SonarScanner'
-        }
+        nodejs 'NodeJS'
+        sonarRunner 'SonarScanner'
+    }
 
     stages {
 
@@ -29,13 +30,20 @@ pipeline {
             }
         }
 
-       stage('SonarQube Analysis') {
-
+        stage('SonarQube Analysis') {
             steps {
+
+                echo 'Running SonarQube analysis...'
 
                 withSonarQubeEnv('SonarQube') {
 
                     sh '''
+                        echo "SonarScanner location:"
+                        which sonar-scanner
+
+                        echo "SonarScanner version:"
+                        sonar-scanner --version
+
                         sonar-scanner \
                         -Dsonar.projectKey=tindog \
                         -Dsonar.projectName=TinDog \
@@ -59,23 +67,25 @@ pipeline {
 
         stage('Build') {
             steps {
+
                 echo 'Building TinDog...'
+
                 sh 'npm run build'
             }
         }
 
         // stage('Deploy to Vercel') {
         //     steps {
-
+        //
         //         echo 'Deploying TinDog to Vercel...'
-
+        //
         //         withCredentials([
         //             string(
         //                 credentialsId: 'vercel-token',
         //                 variable: 'VERCEL_TOKEN'
         //             )
         //         ]) {
-
+        //
         //             sh '''
         //                 npx vercel deploy \
         //                 --prod \
@@ -91,7 +101,6 @@ pipeline {
         success {
             echo '======================================'
             echo 'TinDog CI/CD Pipeline SUCCESS!'
-            echo 'Website deployed to Vercel.'
             echo '======================================'
         }
 
