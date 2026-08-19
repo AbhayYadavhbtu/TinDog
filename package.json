@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/AbhayYadavhbtu/TinDog/issues"
   },
-  "homepage": "https://github.com/AbhayYadavhbtu/TinDog#readme"
+  "homepage": "https://github.com/AbhayYadavhbtu/TinDog#readme",
+  "devDependencies": {
+    "vercel": "^59.1.4"
+  }
 }
