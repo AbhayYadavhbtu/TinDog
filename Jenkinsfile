@@ -74,10 +74,9 @@ pipeline {
                 sh 'npm run build'
             }
         }
-    }
 
-     stage('Deploy to Vercel') {
-        steps {
+        stage('Deploy to Vercel') {
+            steps {
 
                 echo 'Deploying TinDog to Vercel...'
 
@@ -104,8 +103,8 @@ pipeline {
                     '''
                 }
             }
+        }
     }
-
 
     post {
 
